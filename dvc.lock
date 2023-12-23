@@ -1,0 +1,10 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python train.py
+    outs:
+    - path: dvclive
+      hash: md5
+      md5: ee68c1e864d51f3b78aba1cfd3dbebac.dir
+      size: 39155
+      nfiles: 5

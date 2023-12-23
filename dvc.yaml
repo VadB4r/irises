@@ -10,6 +10,7 @@ metrics:
 plots:
 - dvclive/plots/metrics:
     x: step
+- dvclive/plots/images
 - dvclive/plots/sklearn/confusion_matrix.json:
     template: confusion
     x: actual

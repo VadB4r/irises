@@ -1,23 +1,25 @@
-import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import GridSearchCV
-from sklearn.datasets import load_iris
+import seaborn as sns
+import matplotlib.pyplot as plt
 from dvclive import Live
 from sklearn.model_selection import cross_val_score
-from sklearn.metrics import precision_score, recall_score
+from sklearn.metrics import precision_score, recall_score, confusion_matrix
 
-iris = load_iris()
-X = iris.data
-y = iris.target
 with Live() as live:
-    live.log_param("i*j*k", 900)
+    live.log_param("epochs", 1)
 
-    for i in range(1, 11):
-        for j in range(2, 11):
-            for k in range(1, 11):
+    for i in range(1, 5):
+        for j in range(2, 5):
+            for k in range(1, 5):
+                plt.clf()
                 clf = DecisionTreeClassifier(max_depth=i, min_samples_split=j, min_samples_leaf=k)
                 clf.fit(X, y)
-                live.log_metric('Precision', precision_score(y, clf.predict(X), average='micro'))
-                live.log_metric('Recall', recall_score(y, clf.predict(X), average='micro'))
-                live.log_sklearn_plot("confusion_matrix", y, clf.predict(X), name="cm.json")
+                y_pred = clf.predict(X)
+                live.log_metric('Precision', precision_score(y, y_pred, average='micro'))
+                live.log_metric('Recall', recall_score(y, y_pred, average='micro'))
+                live.log_sklearn_plot("confusion_matrix", y, y_pred)
+                conf_matrix = confusion_matrix(y, predictions)
+                sns_plot = sns.heatmap(conf_matrix, annot=True)
+                results_path = 'results.png'
+                plt.savefig(results_path)
+                live.log_image(f"img/{live.step}.png", 'results.png')
                 live.next_step()
